@@ -108,6 +108,48 @@ const HelloGreating = () => {
     )
 }
 
+const Test = (props) => {
+    return(
+        <div style={{'width': '600px', 'margin': '0 auto'}}> 
+            {props.children}
+        </div>
+    )
+}
+
+const Message = (props) => {
+    return(
+        <h2>
+            The counter is {props.counter}
+        </h2> 
+    )
+}
+
+class Counter extends Component {
+    state = {
+        counter: 0
+    }
+
+    changeCounter = () => {
+        this.setState(({counter}) => ({
+            counter: counter + 1
+        }))
+    }
+
+    render() {
+        return(
+            <>
+                <button
+                    className={'btn btn-primary'}
+                    onClick={this.changeCounter}>
+                        Click me
+                </button>
+                {/*рендер-пропс - передача в качестве пропса функции с параметром: см. 154 строчку вызова Counter*/}
+                {this.props.render(this.state.counter)}
+            </>
+        )
+    }
+}    
+
 //целые структуры с тэгами можно передавать в качестве пропсов - пример left и right ниже
 function App() {
   return (
@@ -116,7 +158,17 @@ function App() {
             <h2>Hello, man</h2>
             <h2>Hello Wolrd</h2>
         </DynamicGreating>         */}
+        
+        {/* в качестве пропса передаем колбэк-функцию, которая возвращает компонент Message*/}
+        <Counter render={counter => 
+                            <Message counter={counter}/>
+                        }/>
+        <Test>
+            <h2>Test Test Test</h2>
+        </Test>
+
         <HelloGreating/>
+        
         <BootstrapTest
             left={
                 <DynamicGreating color={'primary'}>
