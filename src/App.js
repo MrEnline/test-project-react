@@ -1,191 +1,51 @@
-import React,{ Component } from 'react';
-import styled from 'styled-components';
-import BootstrapTest from './BootstrapTest';
-
+import React, {Component} from 'react';
+import {Container} from 'react-bootstrap';
 import './App.css';
 
-const EmpItem = styled.div`
-    padding: 20px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    box-shadow: 5px 5px 10px rgba(0,0,0, .2);
-    a {
-        display: block;
-        margin: 10px 0 10px 0;
-        color: ${props => props.active ? 'orange' : 'black'};
-    }
-    input {
-        display: block;
-        margin-top: 10px;
-    }
-`;
+class Form extends Component {
 
-const Header = styled.h2`
-    font-size: 22px;
-`;
+    myRef = React.createRef();
+    mySecondRef = React.createRef();    //можно создавать сколько угодно рефов для использования
 
-export const Button = styled.button`
-    display: block;
-    padding: 5px 15px;
-    background-color: gold;
-    border: 1px solid rgba(0,0,0, .2);
-    box-shadow: 5px 5px 10px rgba(0,0,0, .2);
-`;
+    //ref получает ссылку на dom-элемент в структуре
+    //ref можно вешать и на компоненты(например на Container) для того, чтобы была возможность вызывать методы
+    //у этих компонентов. Свойство current будет иметь ссылку на компонент.
+    //ref лучше использовать в хуке componentDidMount, т.к. он вызывается после render(отрисовки dom-дерева)
+    // componentDidMount(){
+    //     this.myRef.current.focus();
+    // }
 
-class WhoAmI extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            years: 27,
-            position: ''
-        }
+    focusFirstTI = () => {
+        if (this.myRef)
+            this.myRef.focus();
     }
 
-    nextYear = () => {
-        this.setState(state => ({
-            years: state.years + 1
-        }))
-    }
-
-    commitInputChanges = (e, color) => {
-        console.log(color);
-        this.setState({
-            position: e.target.value
-        })
+    setInputRef = elem => {
+        this.myRef = elem;
     }
 
     render() {
-        const {name, surname, link} = this.props;
-        const {position, years} = this.state;
-
         return (
-            <EmpItem active>
-                <Button onClick={this.nextYear}>+++</Button>
-                <Header>My name is {name}, surname - {surname}, 
-                    age - {years}, 
-                    position - {position}</Header>
-                <a href={link}>My profile</a>
-                <form>
-                    <span>Введите должность</span>
-                    <input type="text" onChange={(e) => this.commitInputChanges(e, 'some color')} />
+            <Container>
+                <form className="w-50 border mt-5 p-3 m-auto">
+                    <div className="mb-3">
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
+                        <input ref={this.setInputRef} type="email" className="form-control" id="exampleFormControlInput1" placeholder="name@example.com"/>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="exampleFormControlTextarea1" className="form-label">Example textarea</label>
+                        <textarea onClick={this.focusFirstTI} className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
                 </form>
-            </EmpItem>
+            </Container>
         )
     }
 }
 
-const Wrapper = styled.div`
-    width: 600px;
-    margin: 80px auto 0 auto;
-`;
-
-//Колбэк-функция в методе map применяется для всех элементов, которые идут в props.children
-//т.к. принцип иммутабельности изменять нельзя, поэтому используем метод cloneElement, которые клонирует старые элементы
-//и в новых добавляются новые свойства
-const DynamicGreating = (props) => {
-    return (
-      <div className={'mb-3 p-3 border border-' + props.color}>
-          {/* {props.children} */}
-          {
-              React.Children.map(props.children, child => {
-                  return React.cloneElement(child, {className: 'shadow p-3 m-3 border rounded'})
-              })
-          }
-      </div>
-    )
-}
-
-//в данном примере используется композиция вместо наследования
-//композиция - возможность использовать внутри одного компонента другие компоненты
-//чаще всего используется композиция вместо наследования, потому что удобнее
-const HelloGreating = () => {
-    return(
-        <div style={{'width': '600px', 'margin': '0 auto'}}>
-            <DynamicGreating color={'primary'}>
-                <h2>Hello Greating</h2>
-            </DynamicGreating> 
-        </div>
-    )
-}
-
-const Test = (props) => {
-    return(
-        <div style={{'width': '600px', 'margin': '0 auto'}}> 
-            {props.children}
-        </div>
-    )
-}
-
-const Message = (props) => {
-    return(
-        <h2>
-            The counter is {props.counter}
-        </h2> 
-    )
-}
-
-class Counter extends Component {
-    state = {
-        counter: 0
-    }
-
-    changeCounter = () => {
-        this.setState(({counter}) => ({
-            counter: counter + 1
-        }))
-    }
-
-    render() {
-        return(
-            <>
-                <button
-                    className={'btn btn-primary'}
-                    onClick={this.changeCounter}>
-                        Click me
-                </button>
-                {/*рендер-пропс - передача в качестве пропса функции с параметром: см. 154 строчку вызова Counter*/}
-                {this.props.render(this.state.counter)}
-            </>
-        )
-    }
-}    
-
-//целые структуры с тэгами можно передавать в качестве пропсов - пример left и right ниже
 function App() {
-  return (
-    <Wrapper>
-        {/* <DynamicGreating color={'primary'}>
-            <h2>Hello, man</h2>
-            <h2>Hello Wolrd</h2>
-        </DynamicGreating>         */}
-        
-        {/* в качестве пропса передаем колбэк-функцию, которая возвращает компонент Message*/}
-        <Counter render={counter => 
-                            <Message counter={counter}/>
-                        }/>
-        <Test>
-            <h2>Test Test Test</h2>
-        </Test>
-
-        <HelloGreating/>
-        
-        <BootstrapTest
-            left={
-                <DynamicGreating color={'primary'}>
-                    <h2>Hello, man</h2>
-                    <h2>Hello Wolrd</h2>
-                </DynamicGreating> 
-            }
-            right={
-                <DynamicGreating color={'primary'}>
-                    <h2>This is Sparta</h2>
-                </DynamicGreating>               
-            }
-        />
-        <WhoAmI name='John' surname="Smith" link="facebook.com"/>
-        <WhoAmI name='Alex' surname="Shepard" link="vk.com"/>
-    </Wrapper>
-  );
+    return (
+        <Form/>
+    );
 }
 
 export default App;
