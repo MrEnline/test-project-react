@@ -81,7 +81,7 @@ const Wrapper = styled.div`
 
 //Колбэк-функция в методе map применяется для всех элементов, которые идут в props.children
 //т.к. принцип иммутабельности изменять нельзя, поэтому используем метод cloneElement, которые клонирует старые элементы
-//и в новых добавляются новые свойства
+//и в новых добавляются новые свойства через классы shadow p-3 m-3 border rounded
 const DynamicGreating = (props) => {
     return (
       <div className={'mb-3 p-3 border border-' + props.color}>
@@ -108,19 +108,12 @@ const HelloGreating = () => {
     )
 }
 
+//использование props.children
 const Test = (props) => {
     return(
         <div style={{'width': '600px', 'margin': '0 auto'}}> 
             {props.children}
         </div>
-    )
-}
-
-const Message = (props) => {
-    return(
-        <h2>
-            The counter is {props.counter}
-        </h2> 
     )
 }
 
@@ -148,7 +141,15 @@ class Counter extends Component {
             </>
         )
     }
-}    
+}
+
+const Message = (props) => {
+    return(
+        <h2>
+            The counter is {props.counter}
+        </h2> 
+    )
+}
 
 //целые структуры с тэгами можно передавать в качестве пропсов - пример left и right ниже
 function App() {
@@ -163,8 +164,9 @@ function App() {
         <Counter render={counter => 
                             <Message counter={counter}/>
                         }/>
+        
         <Test>
-            <h2>Test Test Test</h2>
+            <h2>Эта структура от тэга к тэгу и есть props.children</h2>
         </Test>
 
         <HelloGreating/>
@@ -182,6 +184,7 @@ function App() {
                 </DynamicGreating>               
             }
         />
+
         <WhoAmI name='John' surname="Smith" link="facebook.com"/>
         <WhoAmI name='Alex' surname="Shepard" link="vk.com"/>
     </Wrapper>
