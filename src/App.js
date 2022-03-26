@@ -11,6 +11,7 @@ class Form extends Component {
     //ref можно вешать и на компоненты(например на Container) для того, чтобы была возможность вызывать методы
     //у этих компонентов. Свойство current будет иметь ссылку на компонент.
     //ref лучше использовать в хуке componentDidMount, т.к. он вызывается после render(отрисовки dom-дерева)
+    
     // componentDidMount(){
     //     this.myRef.current.focus();
     // }
