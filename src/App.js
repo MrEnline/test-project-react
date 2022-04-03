@@ -1,73 +1,38 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom'
+import {useEffect, useRef, useState} from 'react';
 import {Container} from 'react-bootstrap';
 import './App.css';
-import { findByAltText } from '@testing-library/react';
 
-class Form extends Component {
+const Form = () => {
+    //const myRef = useRef(null)  //изменение ref'а не вызывает перерендер, но ссылка на объект в DOM сохраняется при каждом рендере
 
-    state = {
-        advOpen: false
-    }
+    const [text, setText] = useState('');
 
-    componentDidMount() {
-        setInterval(this.handleClick, 3000);
-    }
+    const myRef = useRef(1);
 
-    handleClick = () => {
-        this.setState(({advOpen}) => ({
-            advOpen: !advOpen
-        }))
-    }
+    //не будет выполняться при нажатии на область textarea, т.к. перерендеринг при useRef не происходит
+    //но в myRef.current можно сохранять много важных вещей без перерендера компонента
+    //например можем посчитать количество перерендеров компонента(myRef.current++)
+    //либо можем сохранять предыдущее состояние например state
+    useEffect(() => {
+        // myRef.current++;
+        // console.log(myRef.current)
+        myRef.current = text;
+    })
 
-    render() {
-        return (
-            <Container>
-                <form onClick={this.handleClick} className="w-50 border mt-5 p-3 m-auto" 
-                style={{'overflow': 'hidden', 
-                        'position': 'relative'}}>
-                    <div className="mb-3">
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
-                        <input  type="email" className="form-control" id="exampleFormControlInput1" placeholder="name@example.com"/>
+    return (
+        <Container>
+            <form className="w-50 border mt-5 p-3 m-auto">
+                <div className="mb-3">
+                    <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
+                    <input onChange={(e) => setText(e.target.value)} type="email" className="form-control" id="exampleFormControlInput1" placeholder="name@example.com"/>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="exampleFormControlTextarea1" className="form-label">Example textarea</label>
-                        <textarea className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                    </div>
-                    
-                    {
-                        this.state.advOpen ?
-                            <Portal>
-                                <Msg/>
-                            </Portal> 
-                            : null
-                    }
-
-                </form>
-            </Container>
-        )
-    }
-}
-
-//Порталы позволяют рендерить дочерние элементы в DOM-узел, 
-//который находится вне DOM-иерархии родительского компонента.
-const Portal = (props) => {
-    const node = document.createElement('div');
-    document.body.appendChild(node);
-    return ReactDOM.createPortal(props.children, node)
-}
-
-const Msg = () => {
-    return(
-        <div 
-            style={{'width': '500px', 
-                    'height': '150px', 
-                    'backgroundColor': 'red', 
-                    'position': 'absolute', 
-                    'right': '0', 
-                    'bottom': '0'}}>
-                Hello
-        </div>
+                    <label htmlFor="exampleFormControlTextarea1" className="form-label">Example textarea</label>
+                    {/* <textarea onClick={() => myRef.current++} className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea> */}
+                    <textarea value={myRef.current} className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                </div>
+            </form>
+        </Container>
     )
 }
 
