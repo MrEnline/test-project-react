@@ -1,4 +1,4 @@
-import { useState, Component, createContext } from 'react';
+import { useState, createContext, useComponent } from 'react';
 import { Container } from 'react-bootstrap';
 import './App.css';
 
@@ -41,39 +41,19 @@ const Form = (props) => {
     );
 };
 
-//классовый компонент
-class InputComponent extends Component {
-    //3-й способ работы с контектсом, аналогичный 2-му, но более продвинутый
-    static contextType = dataContext;
+const InputComponent = () => {
+    const context = useComponent(dataContext);
 
-    render() {
-        return (
-            // <Consumer>
-            //     {(value) => {
-            //         return (
-            //             <input
-            //                 value={value.mail}
-            //                 type="email"
-            //                 className="form-control"
-            //                 id="exampleFormControlInput1"
-            //                 placeholder="name@example.com"
-            //             />
-            //         );
-            //     }}
-            // </Consumer>
-            <input
-                value={this.context.mail}
-                type="email"
-                className="form-control"
-                id="exampleFormControlInput1"
-                placeholder="name@example.com"
-            />
-        );
-    }
-}
-//2-й способ работы с контекстом
-//вместо Consumer можно использовать данное свойство классового компонента
-//InputComponent.contextType = dataContext;
+    return (
+        <input
+            value={context.mail}
+            type="email"
+            className="form-control"
+            id="exampleFormControlInput1"
+            placeholder="name@example.com"
+        />
+    );
+};
 
 function App() {
     const [data, setData] = useState({
